@@ -20,6 +20,8 @@ namespace AndcultureCode.ZoomClient
         const string GET_PAST_MEETING = "past_meetings/{meetingId}";
         const string GET_PAST_MEETING_PARTICIPANTS = "past_meetings/{meetingId}/participants";
 
+        const string GET_RECORDING = "meetings/{meetingId}/recordings";
+
         const string PATCH_MEETING = "meetings/{meetingId}";
         const string PATCH_MEETING_REGISTRANTS = "meetings/{meetingId}/registrants";
 
@@ -126,6 +128,36 @@ namespace AndcultureCode.ZoomClient
             request.AddParameter("meetingId", meetingId, ParameterType.UrlSegment);
 
             var response = WebClient.Execute<Meeting>(request);
+
+            if (response.ResponseStatus == ResponseStatus.Completed && response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return response.Data;
+            }
+
+            if (!string.IsNullOrWhiteSpace(response.ErrorMessage))
+            {
+                throw new Exception(response.ErrorMessage);
+            }
+
+            if (!string.IsNullOrWhiteSpace(response.StatusDescription) && !string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception($"{response.StatusDescription} || {response.Content}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception($"{response.StatusCode} || {response.Content}");
+            }
+
+            return null;
+        }
+
+        public MeetingRecording GetMeetingRecordings(string meetingId)
+        {
+            var request = BuildRequestAuthorization(GET_RECORDING, Method.GET);
+            request.AddParameter("meetingId", meetingId, ParameterType.UrlSegment);
+
+            var response = WebClient.Execute<MeetingRecording>(request);
 
             if (response.ResponseStatus == ResponseStatus.Completed && response.StatusCode == System.Net.HttpStatusCode.OK)
             {

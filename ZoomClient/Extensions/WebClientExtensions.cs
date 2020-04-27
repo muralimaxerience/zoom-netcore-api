@@ -1,4 +1,5 @@
-﻿using AndcultureCode.ZoomClient.Models;
+﻿using AndcultureCode.ZoomClient.Handlers;
+using AndcultureCode.ZoomClient.Models;
 using Jose;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -15,14 +16,18 @@ namespace AndcultureCode.ZoomClient.Extensions
         {
             var request = new RestRequest(resource, method);
 
-            var payload = new Dictionary<string, object>()
+            /*var payload = new Dictionary<string, object>()
             {
                 { "iss", options.ZoomApiKey },
                 { "exp", new DateTimeOffset(DateTime.UtcNow.AddMinutes(1)).ToUnixTimeSeconds() }
             };
 
             webClient.Authenticator = new JwtAuthenticator(JWT.Encode(payload, Encoding.UTF8.GetBytes(options.ZoomApiSecret), JwsAlgorithm.HS256));
+    */
+            webClient.Authenticator = new JwtAuthenticator(ZoomHandler.GetToken());
             request.JsonSerializer = new NewtonsoftJsonSerializer();
+
+
 
             return request;
         }

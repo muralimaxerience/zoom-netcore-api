@@ -98,5 +98,7 @@ namespace AndcultureCode.ZoomClient.Interfaces
         /// <param name="pageNumber"></param>
         /// <returns></returns>
         ListPastMeetingParticipants GetPastMeetingParticipants(string meetingId, int pageSize = 30, int pageNumber = 1);
+
+        MeetingRecording GetMeetingRecordings(string meetingId);
     }
 }
